@@ -6,11 +6,11 @@ import {
   Param,
   Post,
   Put,
-  Req,
   Res,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
-import { TaskDTO } from './dto/task.dto';
+import { Response } from 'express';
+// my imports
+import { TaskDTO, UpdateTaskDto } from './dto/task.dto';
 import { ITask } from './interfaces/task.interface';
 import { TaskService } from './task.service';
 
@@ -19,7 +19,7 @@ export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @Post()
-  store(@Body() taskDTO: TaskDTO, @Res() res: Response): Response<ITask> {
+  store(@Body() taskDTO: TaskDTO, @Res() res: Response) {
     const data = this.taskService.create(taskDTO);
     return res.json(data);
   }
@@ -37,15 +37,12 @@ export class TaskController {
   }
 
   @Put(':id')
-  update(@Req() req: Request, @Res() res: Response): Response<ITask> {
-    const taskId = req.params.id;
-    const taskToUpdate = req.body;
-
-    const updatedTask = this.taskService.findByIdAndUpdate(
-      taskId,
-      taskToUpdate,
-    );
-
+  update(
+    @Param('id') id: string,
+    @Body() taskToUpdate: UpdateTaskDto,
+    @Res() res: Response,
+  ): Response<ITask> {
+    const updatedTask = this.taskService.findByIdAndUpdate(id, taskToUpdate);
     return res.json(updatedTask);
   }
 

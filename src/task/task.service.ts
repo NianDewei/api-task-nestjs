@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TaskDTO } from './dto/task.dto';
+import { TaskDTO, UpdateTaskDto } from './dto/task.dto';
 import { ITask } from './interfaces/task.interface';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -27,8 +27,13 @@ export class TaskService {
     return data;
   }
 
-  findByIdAndUpdate(id: string, taskDTO: TaskDTO): ITask {
-    const newTask = { id, ...taskDTO };
+  findByIdAndUpdate(id: string, taskDTO: UpdateTaskDto): ITask {
+    const newTask: ITask = {
+      id,
+      description: taskDTO.description,
+      isDone: taskDTO.isDone,
+    };
+
     this.tasks = this.tasks.map((task) => (task.id === id ? newTask : task));
     return newTask;
   }
